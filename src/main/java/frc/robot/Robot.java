@@ -54,7 +54,7 @@ public class Robot extends TimedRobot {
   private final double TOPINTAKE_SPEED = 1;
   private final double Flaco_SPEED = -1 ;
  // private final double
-  double desiredDistance = 240;
+  double desiredDistance = 120;
   NetworkTableEntry xEntry;
   NetworkTableEntry yEntry;
   private static final int kEncoderPortA = 0;
@@ -63,6 +63,7 @@ public class Robot extends TimedRobot {
   private static final int kEncoderPortC = 2;
   private static final int kEncoderPortD = 3;
   private Encoder m_encoder2;
+  double kP = 1;
   private Command m_autonomousCommand;
   // private final DifferentialDrive m_robotDrive = new DifferentialDrive(new WPI_VictorSPX(3), new WPI_VictorSPX(4));
   // drive motors
@@ -432,6 +433,8 @@ if(gameData.length() > 0)
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
+   /* m_encoder.setDistancePerPulse(1./256.);
+    m_encoder2.setDistancePerPulse(1./256.);*/
 
   }
 
@@ -448,16 +451,27 @@ if(gameData.length() > 0)
        x += 0.05;
        y += 1.0;
 
-
+       if (m_Extreme1.getTrigger()) {
+        m_TopIntakeMotor1.set(INTAKE_SPEED);
+        m_BottomIntakeMotor2.set(TOPINTAKE_SPEED);
+         }     else {
+          m_TopIntakeMotor1.set(0);
+          m_BottomIntakeMotor2.set(0);
+         // stop motor
+        }
+        
+/*
        if (m_encoder.getDistance() < desiredDistance && m_encoder2.getDistance() < desiredDistance) {
-        m_robotDrive.arcadeDrive(1, 0.0);
+        m_robotDrive.arcadeDrive(.5, 0.0);
+        double error = m_encoder.getDistance() - m_encoder2.getDistance();
+        m_robotDrive.arcadeDrive(.5 + kP * error, .5 - kP * error);
         if(athenatime > 5.0){
           m_robotDrive.stopMotor(); // stop robot
       }
     }
     else{
       m_robotDrive.stopMotor();
-    }
+    } */
   
   /********** THIS IS THE TWO JOYSTICK TANK DRIVE
      m_robotDrive.tankDrive(-m_Extreme1.getY(Hand.kRight), -m_Extreme2.getY(Hand.kLeft));
