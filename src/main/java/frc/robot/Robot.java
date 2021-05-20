@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.subsystems.ExampleSubsystem;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -37,7 +38,7 @@ import edu.wpi.first.wpilibj.PWM;
 import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 //import frc.robot.Constants;
-
+import frc.robot.commands.ExampleCommand;
 import frc.robot.subsystems.*;
 
 /**
@@ -81,6 +82,11 @@ public class Robot extends TimedRobot {
     private final XboxController m_stick = new XboxController(0);
     private final Joystick m_Extreme1 = new Joystick(1);
     private final Joystick  m_Extreme2 = new Joystick(2);
+  /*  Joystick exampleStick = new Joystick(1); // Creates a joystick on port 1
+
+        XboxController exampleController = new XboxController(2); // Creates an XboxController on port 2.
+        JoystickButton exampleButton = new JoystickButton(exampleStick, 1); // Creates a new JoystickButton object for button 1 on exampleStick */
+//private final ExampleSubsystem exampleSubsystem = new ExampleSubsystem();
     /**
      * Change the I2C port below to match the connection of your color sensor
      */
@@ -107,7 +113,7 @@ public class Robot extends TimedRobot {
     private final Color kGreenTarget = ColorMatch.makeColor(0.197, 0.561, 0.240);
     private final Color kRedTarget = ColorMatch.makeColor(0.561, 0.232, 0.114);
     private final Color kYellowTarget = ColorMatch.makeColor(0.361, 0.524, 0.113);*/
-    private SendableChooser<Command> autoChooser = new SendableChooser<>();
+   // private SendableChooser<Command> autoChooser = new SendableChooser<>();
       
 
     /**
@@ -117,15 +123,15 @@ public class Robot extends TimedRobot {
 
   @Override
   public void robotInit() {
-    SendableChooser<String> autoChooser = new SendableChooser<String>();
+   /* SendableChooser<String> autoChooser = new SendableChooser<String>();
     autoChooser.addOption("turn", "turn");
     autoChooser.addOption("drive_straight", "drive_straight");
-    SmartDashboard.putData("Auto Mode", autoChooser);
+    SmartDashboard.putData("Auto Mode", autoChooser);*/
   
-  String autonMode = autoChooser.getSelected();
+ // String autonMode = autoChooser.getSelected();
 
     //chooser.addDefault("Right", new RobotDrive());
-    autoChooser.setDefaultOption("Right", m_autonomousCommand);
+  //  autoChooser.setDefaultOption("Right", m_autonomousCommand);
     m_leftMotor.setInverted(true);
     m_rightMotor.setInverted(true);
     m_leftfollow.setInverted(true);
@@ -137,21 +143,21 @@ public class Robot extends TimedRobot {
     chooser.addObject("Center", new AutoCenter());
     chooser.addObject("Cross the Line", new AutoCrossTheLine());*/
   
-    SmartDashboard.putData("Auto mode", autoChooser);
+  //  SmartDashboard.putData("Auto mode", autoChooser);
 
-    CameraServer.getInstance().startAutomaticCapture();
+ //   CameraServer.getInstance().startAutomaticCapture();
      //Get the default instance of NetworkTables that was created automatically
        //when your program starts
-       NetworkTableInstance inst = NetworkTableInstance.getDefault();
+     //  NetworkTableInstance inst = NetworkTableInstance.getDefault();
         //Get the table within that instance that contains the data. There can
        //be as many tables as you like and exist to make it easier to organize
        //your data. In this case, it's a table called datatable.
-       NetworkTable table = inst.getTable("datatable");
+    //   NetworkTable table = inst.getTable("datatable");
 // swag nat and caro were here feb 20 2021
        //Get the entries within that table that correspond to the X and Y values
        //for some operation in your program.
-       xEntry = table.getEntry("X");
-       yEntry = table.getEntry("Y");
+   /*    xEntry = table.getEntry("X");
+       yEntry = table.getEntry("Y");*/
     m_leftfollow.follow(m_leftMotor);
     m_rightfollow.follow(m_rightMotor);
     
@@ -438,7 +444,7 @@ if(gameData.length() > 0)
     // continue until interrupted by another command, remove
     // this line or comment it out.
     // Reset the encoders
-    m_encoder.reset();
+    m_encoder.reset();//
     m_encoder2.reset();
     
     if (m_autonomousCommand != null) {
@@ -469,46 +475,7 @@ if(gameData.length() > 0)
        y += 1.0;
 
        
-  public void turn(String DIRECTION, int DEGREE) {
-
-    m_encoder.reset();
-    m_encoder2.reset();
-
-    double setClicks = DEGREE / 6;
-
-    if (DIRECTION == "ccw") {
-
-      while (m_encoder.getDistance() < setClicks && m_encoder2.getDistance() < setClicks) {
-        m_leftMotor.set(-0.5);
-        m_rightMotor.set(0.5);
-        // driveleft
-        // driveright
-        m_robotDrive.arcadeDrive(0.5, 0);
-        System.out.println("Turning Left for {0} degrees" + DEGREE);
-      }
-    }
-
-    else if (DIRECTION == "cw") {
-
-      while (m_encoder.getDistance() > -setClicks && m_encoder2.getDistance() > -setClicks) {
-        m_leftMotor.set(0.5);
-        m_rightMotor.set(-0.5);
-        // driveleft
-        // driveright
-        m_robotDrive.arcadeDrive(0.5, 0);
-        System.out.println("Turning Right for {0} degrees" + DEGREE);
-      }
-    }
-    
-    else {
-      m_leftMotor.set(0);
-      m_rightMotor.set(0);
-    }
-
-    m_encoder.reset();
-    m_encoder2.reset();
-  }
-
+  
 
        if (m_Extreme1.getTrigger()) {
         m_TopIntakeMotor1.set(-TOPINTAKE_SPEED);
@@ -518,12 +485,12 @@ if(gameData.length() > 0)
           m_BottomIntakeMotor2.set(0);
          // stop motor
         }
-        if (m_Extreme2.getTrigger()) {
-          //m_TopIntakeMotor2.set(-TOPOUTTAKE_SPEED);
-          turn("ccw", 90);
-        } else {
-          //m_TopIntakeMotor2.set(0);
-        }
+        
+
+       // exampleButton.whenPressed(() -> exampleSubsystem.turn("cw", 180));
+
+          //m_TopIntakeMotor2.set(-TOPOUTTAKE_SPEED)
+          
         
         m_robotDrive.arcadeDrive(m_Extreme1.getY(Hand.kLeft), m_Extreme2.getX(Hand.kRight));
         /*double error = m_encoder.getDistance() + m_encoder2.getDistance();
