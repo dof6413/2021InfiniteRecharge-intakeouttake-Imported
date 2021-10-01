@@ -51,10 +51,10 @@ public class Robot extends TimedRobot {
   private final double INTAKE_SPEED = -1;
   private final double OUTTAKE_SPEED = .5;
   private final double TOPOUTTAKE_SPEED = 1;
-  private final double TOPINTAKE_SPEED = 1;
+  private final double TOPINTAKE_SPEED = 0.5;
   private final double Flaco_SPEED = -1 ;
  // private final double
-  double desiredDistance = 120;
+  double desiredDistance = 240;
   NetworkTableEntry xEntry;
   NetworkTableEntry yEntry;
   private static final int kEncoderPortA = 0;
@@ -63,7 +63,7 @@ public class Robot extends TimedRobot {
   private static final int kEncoderPortC = 2;
   private static final int kEncoderPortD = 3;
   private Encoder m_encoder2;
-  double kP = 1;
+  double kP = .001;
   private Command m_autonomousCommand;
   // private final DifferentialDrive m_robotDrive = new DifferentialDrive(new WPI_VictorSPX(3), new WPI_VictorSPX(4));
   // drive motors
@@ -72,9 +72,9 @@ public class Robot extends TimedRobot {
     private final WPI_VictorSPX m_leftfollow = new WPI_VictorSPX(2);
     private final WPI_VictorSPX m_rightfollow = new WPI_VictorSPX(4);
   
-    private final WPI_TalonSRX m_TopIntakeMotor1 = new WPI_TalonSRX(7); // green 
+    private final WPI_TalonSRX m_TopIntakeMotor1 = new WPI_TalonSRX(6); // gray
     private final WPI_TalonSRX m_BottomIntakeMotor2 = new WPI_TalonSRX(8); // pink :)
-    private final WPI_TalonSRX m_TopIntakeMotor2 = new WPI_TalonSRX(6); // gray 
+    private final WPI_TalonSRX m_TopIntakeMotor2 = new WPI_TalonSRX(7); // green 
     private final WPI_TalonSRX m_Pwnf = new WPI_TalonSRX(9); // white
   
     private final DifferentialDrive m_robotDrive = new DifferentialDrive(m_leftMotor, m_rightMotor);
@@ -118,10 +118,10 @@ public class Robot extends TimedRobot {
   public void robotInit() {
     //chooser.addDefault("Right", new RobotDrive());
     chooser.setDefaultOption("Right", m_autonomousCommand);
-    m_leftMotor.setInverted(true);
+   /* m_leftMotor.setInverted(true);
     m_rightMotor.setInverted(true);
     m_leftfollow.setInverted(true);
-    m_rightfollow.setInverted(true);
+    m_rightfollow.setInverted(true);*/
     /*chooser.addOption("Left", new AutoLeft());
     
     
@@ -147,7 +147,7 @@ public class Robot extends TimedRobot {
     m_leftfollow.follow(m_leftMotor);
     m_rightfollow.follow(m_rightMotor);
     
-      m_TopIntakeMotor2.follow(m_TopIntakeMotor1);
+    
       
     
     
@@ -452,26 +452,35 @@ if(gameData.length() > 0)
        y += 1.0;
 
        if (m_Extreme1.getTrigger()) {
-        m_TopIntakeMotor1.set(INTAKE_SPEED);
+        m_TopIntakeMotor1.set(-TOPINTAKE_SPEED);
         m_BottomIntakeMotor2.set(TOPINTAKE_SPEED);
          }     else {
           m_TopIntakeMotor1.set(0);
           m_BottomIntakeMotor2.set(0);
          // stop motor
         }
+
+        if (m_Extreme2.getTrigger()){
+          m_TopIntakeMotor2.set(-TOPOUTTAKE_SPEED);
+          m_Pwnf.set(-TOPOUTTAKE_SPEED);
+        }     else {
+          m_TopIntakeMotor2.set(0);
+          m_Pwnf.set(0);
+        }
         
-/*
+      /*  double error = m_encoder.getDistance() + m_encoder2.getDistance();
+
        if (m_encoder.getDistance() < desiredDistance && m_encoder2.getDistance() < desiredDistance) {
-        m_robotDrive.arcadeDrive(.5, 0.0);
-        double error = m_encoder.getDistance() - m_encoder2.getDistance();
-        m_robotDrive.arcadeDrive(.5 + kP * error, .5 - kP * error);
-        if(athenatime > 5.0){
-          m_robotDrive.stopMotor(); // stop robot
-      }
+//tank drive takes in inputs from the left & right
+        m_robotDrive.tankDrive(.625 + kP * error, .625 - kP * error);
+        System.out.println("Motor things: "+(kP * error));
     }
     else{
       m_robotDrive.stopMotor();
-    } */
+    }*/
+
+    m_robotDrive.arcadeDrive(m_Extreme1.getY(Hand.kLeft), m_Extreme2.getX(Hand.kRight));
+    
   
   /********** THIS IS THE TWO JOYSTICK TANK DRIVE
      m_robotDrive.tankDrive(-m_Extreme1.getY(Hand.kRight), -m_Extreme2.getY(Hand.kLeft));
